@@ -1,2 +1,2 @@
-# adaplayground
+# Ada playground
 Ada playground
