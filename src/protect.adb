@@ -12,19 +12,23 @@
 -------------------
 -- OUTPUT EXAMPLE
 --
---  0.000003000 R1 reading...
---  0.000371000 OAT starts reading...
---  0.000123000 ET writes 1...
---  0.000031000 R2 works for 2s
---  2.000471000 R2 reading...
---  3.000517000 OAT ended read
---  3.000430000 3.000578000 OAT starts writing...
---  ...R1 read 0
---  8.000836000 OAT ended writing...
---  8.000850000 ET has written 1
---  8.000916000 OAT starts reading...
---  11.001029000 OAT ended read
---  11.000936000 ...R2 read 1
+--   0.000004000 R1 reading...
+--   0.000222000 OAT starts reading...
+--   0.000033000 0.000128000 ET writes 1...
+--   R2 works for 2s
+--   2.000336000 R2 reading...
+--   3.000359000 OAT ended read
+--   3.000268000 3.000418000 OAT starts writing...
+--   ...R1 read 0
+--   8.000543000 OAT ended writing...
+--   8.000542000 ET has written 1
+--   8.000588000 OAT starts reading...
+--   11.000725000 OAT ended read
+--   11.000623000 ...R2 read 1
+--  *** R2 exit ***
+--   11.000794000 OAT starts reading...
+--   14.000952000 OAT ended read
+--   14.000848000*** R1 exit ***
 --
 --  R1 reads at 0, end reading at 3
 --  ET starts writing at 0, but OAT is already reading,
@@ -33,10 +37,25 @@
 --
 --        ..........1.
 --        0....5....0.
---  R1    RRR  
+--  R1    RRR-----rrrRRR  
 --  R2    --rrrrrrRRR
 --  ET    wwwWWWWW____
 --
+-- When using a function, which isn't allowed to modify the data
+-- of the protected object, Barnes (Programming in Ada 2012) says:
+-- "The implementation is consequently permitted to perform the
+-- useful optimization of allowing multiple calls of functions
+-- at the same time thus automatically solving the basic classic
+-- readers and writers problem".
+--
+-- The results are consistent with the implementation NOT doing
+-- anything like this, even if I've used a function for reading.
+--
+-- BUT, I am also using a delay, gnat warns me so
+--    potentially blocking operation in protected operation
+-- for both the function and the procedure. Anyway, could the
+-- delay be the bottleneck? (The delay waits itself...?)
+-- 
 with Ada.Text_IO; use Ada.Text_IO;
 with Ada.Calendar; use Ada.Calendar;
 
@@ -94,6 +113,10 @@ procedure Protect is
       I := One_A_Time.Read;
       Put_Time_Diff (T);
       Put_Line (" ...R1 read" & Integer'Image (I));
+      delay 5.0;
+      -- try to read with R2
+      I := One_A_Time.Read;
+      Put_Time_Diff (T); Put_Line ("*** R1 exit ***");
    end Reader1;
    
    task body Reader2 is
@@ -108,6 +131,7 @@ procedure Protect is
       I := One_A_Time.Read;
       Put_Time_Diff (T);
       Put_Line (" ...R2 read" & Integer'Image (I));
+      Put_Line ("*** R2 exit ***");
    end Reader2;
    
    T : Time := Clock;
