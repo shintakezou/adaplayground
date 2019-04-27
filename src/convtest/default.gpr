@@ -1,0 +1,6 @@
+project Default is
+   for Main use ("aviotest0.adb");   
+   package Documentation is
+      for Documentation_Dir use "doc";
+   end Documentation;
+end Default;
