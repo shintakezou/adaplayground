@@ -18,5 +18,10 @@ package body Measure_Units is
      (CR : Climb_Rate;
       T  : Duration) return Ft is
      (Ft (Float (CR) * Float (T) / 60.0));
+   
+   function "/"
+     (D : Ft;
+      T : Duration) return Climb_Rate is
+     (Climb_Rate (60.0 * Float (D) / Float (T)));
       
 end Measure_Units;

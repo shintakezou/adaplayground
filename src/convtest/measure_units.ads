@@ -63,18 +63,29 @@ package Measure_Units is
    --  Climb rate (ft/min) * t gives an altitude (distance).
    --  @param CR  Climb rate.
    --  @param T   Time in seconds.
+   --  @return the feet climbed after that time.
+   
+   function "/"
+     (D : Ft;
+      T : Duration) return Climb_Rate;
+   --  Distance in feet / time is a Climb rate
+   --  @param D  Diff of altitude in feet.
+   --  @param T  Time in seconds.
+   --  @return the climb rate.
    
    
    function To_String is new Converters.To_String (Kn);
    function To_String is new Converters.To_String (Ft);
    function To_String is new Converters.To_String (NM);
    function To_String is new Converters.To_String (Mps);   
-   function To_String is new Converters.To_String (Meter);      
+   function To_String is new Converters.To_String (Meter);
+   function To_String is new Converters.To_String (Climb_Rate);
    
    function "&" is new Converters.Concat (Kn, To_String);
    function "&" is new Converters.Concat (Ft, To_String);
    function "&" is new Converters.Concat (NM, To_String);
    function "&" is new Converters.Concat (Mps, To_String);
    function "&" is new Converters.Concat (Meter, To_String);   
+   function "&" is new Converters.Concat (Climb_Rate, To_String);
    
 end Measure_Units;
