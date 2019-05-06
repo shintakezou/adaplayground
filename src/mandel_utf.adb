@@ -31,10 +31,11 @@ procedure Mandel_UTF is
    type Brushes is array (Brush_Levels) of Wide_Character;
    
    function Generate_Glyphs return Brushes is
+      First_Code_Point : constant := 10240;
    begin
       return E : Brushes do
-	 for I in 10240 .. 10495 loop
-	    E (I - 10240) := Wide_Character'Val (I);
+	 for I in Brush_Levels'Range loop
+	    E (I) := Wide_Character'Val (First_Code_Point + I);
 	 end loop;
       end return;
    end Generate_Glyphs;
