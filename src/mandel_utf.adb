@@ -133,8 +133,9 @@ procedure Mandel_UTF is
       while (Y <= Data'Last (2)) loop
 	 X := 0;
 	 while (X < Data'Last (1)) loop
-      	    B := 0;
-     	    if Is_Set (X+0, Y+0) then B := B or 1; end if;
+      	    B := (if Is_Set (X+0, Y+0) then 1 else 0);
+	    -- this looks clean but I'd like to write it in a different way;
+	    -- maybe later... (sort of TODO)
      	    if Is_Set (X+0, Y+1) then B := B or 2; end if;
      	    if Is_Set (X+0, Y+2) then B := B or 4; end if;
      	    if Is_Set (X+0, Y+3) then B := B or 64; end if;
