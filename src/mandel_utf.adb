@@ -154,7 +154,7 @@ procedure Mandel_UTF is
    Width  : constant := Bitmap_Size;
    Height : constant := Width;
    
-   Image       : Bitmap_Ref;
+   Image  : Bitmap_Ref;
 begin
    -- Render, print, then ~~leak~~ free a bitmap.
    Image := new Bitmap (0 .. (Width - 1), 0 .. (Height - 1));
