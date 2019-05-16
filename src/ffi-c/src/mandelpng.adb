@@ -43,7 +43,6 @@ procedure MandelPNG is
    Height : constant := 600;   
    
    Max_Iterations : constant := 32;
-   Num_Of_Threads : constant := 4;
    
    -- Returns the intensity of a single point in the Mandelbrot set.
    function Render_Pixel (C : Complex) return Float is
