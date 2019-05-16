@@ -50,10 +50,10 @@ procedure MandelPNG is
       Z : Complex := Complex'(0.0, 0.0);
    begin
       for N in Integer range 0 .. Max_Iterations loop
-	 Z := Z*Z + C;
-	 if (abs Z > 2.0) then
+         Z := Z*Z + C;
+         if (abs Z > 2.0) then
             return Float (N) / Float (Max_Iterations);
-	 end if;
+         end if;
       end loop;
       return 0.0;
    end;
@@ -84,11 +84,11 @@ procedure MandelPNG is
       Put_Line ("Ydelta: " & Float'Image (Ydelta));
       
       for Y in Data'Range (2) loop
-	 I := I1 + Float (Y) * Ydelta;
-	 for X in Data'Range (1) loop
+         I := I1 + Float (Y) * Ydelta;
+         for X in Data'Range (1) loop
             C := Complex'(R1 + Float (X) * Xdelta, I);
             Data (X, Y) := Render_Pixel (C);
-	 end loop;
+         end loop;
       end loop;
    end;
 
@@ -96,30 +96,30 @@ procedure MandelPNG is
    procedure Dump_Bitmap(Data : Bitmap_Ref) is
       subtype Buffer_Index is Integer range 0 .. 3 * Width * Height - 1;
       
-      type Buffer is array (Buffer_Index range <>) of aliased uint8_t 
+      type Buffer is array (Buffer_Index range <>) of aliased uint8_t
       with
-	Component_Size => 8,
-	Convention => C;
+        Component_Size => 8,
+        Convention => C;
       
       type Buffer_Access is access all Buffer;
       
       type RGB is record
-	 Red, Green, Blue : uint8_t;
+         Red, Green, Blue : uint8_t;
       end record;
       
       procedure To_RGB (V : in Float; D : out RGB) is
-	 RR, GG, BB : Float;
+         RR, GG, BB : Float;
       begin
-	 RR := 255.0 * V; GG := 255.0 * V; BB := 255.0 * V;
-	 D.Red := uint8_t (RR);
-	 D.Green := uint8_t (GG);
-	 D.Blue := uint8_t (BB);
+         RR := 255.0 * V; GG := 255.0 * V; BB := 255.0 * V;
+         D.Red := uint8_t (RR);
+         D.Green := uint8_t (GG);
+         D.Blue := uint8_t (BB);
       end To_RGB;
       
       package Im is new C.Pointers (Index => Buffer_Index,
-				    Element => uint8_t,
-				    Element_Array => Buffer,
-				    Default_Terminator => uint8_t'First);
+                                    Element => uint8_t,
+                                    Element_Array => Buffer,
+                                    Default_Terminator => uint8_t'First);
       
       R : C.int;
       Image : aliased Buffer (Buffer_Index'Range);
@@ -129,22 +129,22 @@ procedure MandelPNG is
       Vals : RGB;
    begin
       for Y in Data'Range (2) loop
-	 for X in Data'Range (1) loop
-	    To_RGB (Data (X, Y), Vals);
-	    Image (3 * (Y * Width + X) + 0) := Vals.Red;
-	    Image (3 * (Y * Width + X) + 1) := Vals.Green;
-	    Image (3 * (Y * Width + X) + 2) := Vals.Blue;
-	 end loop;
+         for X in Data'Range (1) loop
+            To_RGB (Data (X, Y), Vals);
+            Image (3 * (Y * Width + X) + 0) := Vals.Red;
+            Image (3 * (Y * Width + X) + 1) := Vals.Green;
+            Image (3 * (Y * Width + X) + 2) := Vals.Blue;
+         end loop;
       end loop;
       
       R := PNGFunc_C.create_image (C.Strings.New_String ("out.png"),
-				   Width,
-				   Height,
-				   The_Image);
+                                   Width,
+                                   Height,
+                                   The_Image);
       if Integer (R) < 0 then
-	 Put_Line (Standard_Error, "error writing image to file");
+         Put_Line (Standard_Error, "error writing image to file");
       else
-	 Put_Line ("file written");
+         Put_Line ("file written");
       end if;
    end;
    
@@ -153,18 +153,18 @@ procedure MandelPNG is
 begin
    if Argument_Count < 4 then
       Put_Line (Standard_Error, "Usage: " & 
-		  Command_Name & " R1 I1 R2 I2");
+                  Command_Name & " R1 I1 R2 I2");
    else
       declare
-	 R1 : Float := Float'Value (Argument (1));
-	 R2 : Float := Float'Value (Argument (3));
-	 I1 : Float := Float'Value (Argument (2));
-	 I2 : Float := Float'Value (Argument (4));
+         R1 : Float := Float'Value (Argument (1));
+         R2 : Float := Float'Value (Argument (3));
+         I1 : Float := Float'Value (Argument (2));
+         I2 : Float := Float'Value (Argument (4));
       begin
-	 Image := new Bitmap (0 .. Width - 1, 0 .. Height - 1);
-	 Mandelbrot (Image, R1, I1, R2, I2);
-	 Dump_Bitmap (Image);
-	 Free_Bitmap (Image);
+         Image := new Bitmap (0 .. Width - 1, 0 .. Height - 1);
+         Mandelbrot (Image, R1, I1, R2, I2);
+         Dump_Bitmap (Image);
+         Free_Bitmap (Image);
       end;
    end if;
 end;
